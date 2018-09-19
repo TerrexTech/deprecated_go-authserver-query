@@ -2,20 +2,55 @@
 
 
 [[projects]]
-  digest = "1:f446f7e9171044d853ff08a894e733cdb66538a32b6a66b2bce5de7c691897a2"
-  name = "github.com/TerrexTech/go-commonutils"
-  packages = ["utils"]
+  digest = "1:aef23e9ea9f154b965b9792e32c86f315c2c689883ead4eeca8a182f6edfdfbc"
+  name = "github.com/Shopify/sarama"
+  packages = ["."]
   pruneopts = "UT"
-  revision = "ee7a939084fdb644ca3f925275195b170610f3e3"
-  version = "v2.0"
+  revision = "a6144ae922fd99dd0ea5046c8137acfb7fab0914"
+  version = "v1.18.0"
 
 [[projects]]
-  digest = "1:2c2266d68281b5f33efb1248c2a7dff4376f7d0db2cf335d193f521582dd812e"
+  digest = "1:dcade65c88d17fe1841540f1f1f841941cf11f153a26fad02451f263a71490f1"
+  name = "github.com/TerrexTech/go-commonutils"
+  packages = ["commonutil"]
+  pruneopts = "UT"
+  revision = "bec34e895c0ef90d7b0452f141691767356ae6e4"
+  version = "v3.0.0"
+
+[[projects]]
+  digest = "1:96d08e24b477d19fe571f6b10dea4ccc54f269f76930c0f67d1806d680246ddb"
+  name = "github.com/TerrexTech/go-eventstore-models"
+  packages = ["model"]
+  pruneopts = "UT"
+  revision = "46b1852ad76912c965e2519d09b9d8f708345932"
+  version = "v1.4.2"
+
+[[projects]]
+  digest = "1:0e6a18c6eed37c19e25e23fadbd9714348f0678c32436965d303f77a97b48375"
+  name = "github.com/TerrexTech/go-kafkautils"
+  packages = [
+    "consumer",
+    "producer",
+  ]
+  pruneopts = "UT"
+  revision = "b3655b22f8a269a2a35e9b4e96c57fa0f9fe7b3c"
+  version = "v2.1.1"
+
+[[projects]]
+  digest = "1:bd87bceca6d100d678144d0f167d73f99514136ab08bc576443c93858ed046bc"
   name = "github.com/TerrexTech/go-mongoutils"
   packages = ["mongo"]
   pruneopts = "UT"
-  revision = "5bd609437ce24e62ee7602e112b353d595f7a73b"
-  version = "v2.1.1"
+  revision = "0e5f521f2378c1550958337f017a3d72d3da7cbc"
+  version = "v2.1.2"
+
+[[projects]]
+  digest = "1:526d64d0a3ac6c24875724a9355895be56a21f89a5d3ab5ba88d91244269a7d8"
+  name = "github.com/bsm/sarama-cluster"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "c618e605e15c0d7535f6c96ff8efbb0dba4fd66c"
+  version = "v2.1.15"
 
 [[projects]]
   branch = "master"
@@ -26,29 +61,36 @@
   revision = "6acdf747ae99cad92d1e8134606008acaca71844"
 
 [[projects]]
-  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
-  name = "github.com/dgrijalva/jwt-go"
-  packages = ["."]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
   pruneopts = "UT"
-  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
-  version = "v3.2.0"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
-  digest = "1:7c2fd446293ff7799cc496d3446e674ee67902d119f244de645caf95dff1bb98"
-  name = "github.com/go-redis/redis"
-  packages = [
-    ".",
-    "internal",
-    "internal/consistenthash",
-    "internal/hashtag",
-    "internal/pool",
-    "internal/proto",
-    "internal/singleflight",
-    "internal/util",
-  ]
+  digest = "1:1f0c7ab489b407a7f8f9ad16c25a504d28ab461517a971d341388a56156c1bd7"
+  name = "github.com/eapache/go-resiliency"
+  packages = ["breaker"]
   pruneopts = "UT"
-  revision = "f3bba01df2026fc865f7782948845db9cf44cf23"
-  version = "v6.14.1"
+  revision = "ea41b0fad31007accc7f806884dcdf3da98b79ce"
+  version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:79f16588b5576b1b3cd90e48d2374cc9a1a8776862d28d8fd0f23b0e15534967"
+  name = "github.com/eapache/go-xerial-snappy"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "776d5712da21bc4762676d614db1d8a64f4238b0"
+
+[[projects]]
+  digest = "1:444b82bfe35c83bbcaf84e310fb81a1f9ece03edfed586483c869e2c046aef69"
+  name = "github.com/eapache/queue"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "44cc805cf13205b55f69e14bcb69867d1ae92f98"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
@@ -57,6 +99,19 @@
   pruneopts = "UT"
   revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
   version = "v1.8.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:9265f7f8d78bf82bff4a19cc6b33b28073160920b07d8d4d5dca46695edf3b66"
+  name = "github.com/gocql/gocql"
+  packages = [
+    ".",
+    "internal/lru",
+    "internal/murmur",
+    "internal/streams",
+  ]
+  pruneopts = "UT"
+  revision = "5a139e8dcc59d560335dbda641b9f42085e59b0a"
 
 [[projects]]
   digest = "1:ce579162ae1341f3e5ab30c0dce767f28b1eb6a81359aad01723f1ba6b4becdf"
@@ -75,24 +130,20 @@
   revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
 
 [[projects]]
-  digest = "1:6b588a3e17f529ec6239042690ce79b07d752624779f953d46e49335108f4f02"
-  name = "github.com/graphql-go/graphql"
-  packages = [
-    ".",
-    "gqlerrors",
-    "language/ast",
-    "language/kinds",
-    "language/lexer",
-    "language/location",
-    "language/parser",
-    "language/printer",
-    "language/source",
-    "language/typeInfo",
-    "language/visitor",
-  ]
+  branch = "master"
+  digest = "1:364b908b9b27b97ab838f2f6f1b1f46281fa29b978a037d72a9b1d4f6d940190"
+  name = "github.com/hailocab/go-hostpool"
+  packages = ["."]
   pruneopts = "UT"
-  revision = "5c1be0872a56fba73b279434ea95dfda735abedd"
-  version = "v0.7.6"
+  revision = "e80d13ce29ede4452c43dea11e79b9bc8a15b478"
+
+[[projects]]
+  digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
+  name = "github.com/joho/godotenv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "23d116af351c84513e1946b527c88823e476be13"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:c990d4427f9d6c34549935233b7034bed5460bc4db829f3cdf3392160f35dcaf"
@@ -154,12 +205,31 @@
   version = "v0.0.13"
 
 [[projects]]
+  digest = "1:4f0885b3f0dba96128a09a6f4b4231c42688fbd05f323224c6aa5adc9f4e87bf"
+  name = "github.com/pierrec/lz4"
+  packages = [
+    ".",
+    "internal/xxh32",
+  ]
+  pruneopts = "UT"
+  revision = "bb6bfd13c6a262f1943c0446eb25b7f54c1fb9a2"
+  version = "v2.0.6"
+
+[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:c4556a44e350b50a490544d9b06e9fba9c286c21d6c0e47f54f3a9214597298c"
+  name = "github.com/rcrowley/go-metrics"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e2704e165165ec55d062f5919b4b29494e9fa790"
 
 [[projects]]
   branch = "master"
@@ -220,15 +290,27 @@
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
+[[projects]]
+  digest = "1:2d1fbdc6777e5408cabeb02bf336305e724b925ff4546ded0fa8715a7267922a"
+  name = "gopkg.in/inf.v0"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d2d2541c53f18d2a059457998ce2876cc8e67cbf"
+  version = "v0.9.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/Shopify/sarama",
+    "github.com/TerrexTech/go-commonutils/commonutil",
+    "github.com/TerrexTech/go-eventstore-models/auth",
+    "github.com/TerrexTech/go-kafkautils/consumer",
+    "github.com/TerrexTech/go-kafkautils/producer",
     "github.com/TerrexTech/go-mongoutils/mongo",
-    "github.com/dgrijalva/jwt-go",
-    "github.com/go-redis/redis",
+    "github.com/bsm/sarama-cluster",
     "github.com/gofrs/uuid",
-    "github.com/graphql-go/graphql",
+    "github.com/joho/godotenv",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/bson/objectid",
     "github.com/pkg/errors",

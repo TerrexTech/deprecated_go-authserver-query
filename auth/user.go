@@ -1,6 +1,8 @@
-package model
+package auth
 
 import (
+	"encoding/json"
+
 	"github.com/gofrs/uuid"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/objectid"
@@ -17,7 +19,7 @@ type User struct {
 	Role      string            `bson:"role,omitempty" json:"role,omitempty"`
 }
 
-// marshalUser is a simple
+// marshalUser is a simplified User, for convenient marshalling/unmarshalling operations
 type marshalUser struct {
 	ID        objectid.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	UUID      string            `bson:"uuid,omitempty" json:"uuid,omitempty"`
@@ -31,6 +33,7 @@ type marshalUser struct {
 
 func (u *User) MarshalBSON() ([]byte, error) {
 	mu := &marshalUser{
+		ID:        u.ID,
 		FirstName: u.FirstName,
 		LastName:  u.LastName,
 		Email:     u.Email,
@@ -39,12 +42,25 @@ func (u *User) MarshalBSON() ([]byte, error) {
 		Role:      u.Role,
 	}
 
-	mu.ID = u.ID
 	if u.UUID.String() != (uuid.UUID{}).String() {
 		mu.UUID = u.UUID.String()
 	}
 
 	return bson.Marshal(mu)
+}
+
+func (u *User) MarshalJSON() ([]byte, error) {
+	// No password here since JSON is for external use, while BSON is used internally
+	mu := &map[string]interface{}{
+		"_id":        u.ID.Hex(),
+		"first_name": u.FirstName,
+		"last_name":  u.LastName,
+		"email":      u.Email,
+		"username":   u.Username,
+		"role":       u.Role,
+		"uuid":       u.UUID.String(),
+	}
+	return json.Marshal(mu)
 }
 
 func (u *User) UnmarshalBSON(in []byte) error {

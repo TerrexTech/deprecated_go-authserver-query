@@ -1,12 +1,10 @@
 package auth
 
 import (
+	"github.com/TerrexTech/go-mongoutils/mongo"
 	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
-
-	"github.com/TerrexTech/go-authserver-query/model"
-	"github.com/TerrexTech/go-mongoutils/mongo"
 )
 
 // DBI is the Database-interface for authentication.
@@ -14,8 +12,8 @@ import (
 // login, registeration etc.
 type DBI interface {
 	Collection() *mongo.Collection
-	UserByUUID(uid uuid.UUID) (*model.User, error)
-	Login(user *model.User) (*model.User, error)
+	UserByUUID(uid uuid.UUID) (*User, error)
+	Login(user *User) (*User, error)
 }
 
 // DB is the implementation for dbI.
@@ -65,7 +63,7 @@ func EnsureAuthDB() (*DB, error) {
 		Connection:   conn,
 		Database:     "rns_projections",
 		Name:         "user_auth",
-		SchemaStruct: &model.User{},
+		SchemaStruct: &User{},
 		Indexes:      indexConfigs,
 	}
 	c, err := mongo.EnsureCollection(collConfig)
@@ -78,8 +76,8 @@ func EnsureAuthDB() (*DB, error) {
 	}, nil
 }
 
-func (d *DB) UserByUUID(uid uuid.UUID) (*model.User, error) {
-	user := &model.User{
+func (d *DB) UserByUUID(uid uuid.UUID) (*User, error) {
+	user := &User{
 		UUID: uid,
 	}
 
@@ -92,12 +90,12 @@ func (d *DB) UserByUUID(uid uuid.UUID) (*model.User, error) {
 		return nil, errors.New("UserByUUID: User not found")
 	}
 
-	resultUser := findResults[0].(*model.User)
+	resultUser := findResults[0].(*User)
 	return resultUser, nil
 }
 
-func (d *DB) Login(user *model.User) (*model.User, error) {
-	authUser := &model.User{
+func (d *DB) Login(user *User) (*User, error) {
+	authUser := &User{
 		Email:    user.Email,
 		Username: user.Username,
 	}
@@ -111,7 +109,7 @@ func (d *DB) Login(user *model.User) (*model.User, error) {
 		return nil, errors.New("Login: Invalid Credentials")
 	}
 
-	newUser := findResults[0].(*model.User)
+	newUser := findResults[0].(*User)
 	passErr := bcrypt.CompareHashAndPassword([]byte(newUser.Password), []byte(user.Password))
 	if passErr != nil {
 		return nil, errors.New("Login: Invalid Credentials")
