@@ -2,17 +2,27 @@ package auth
 
 import (
 	"github.com/TerrexTech/go-mongoutils/mongo"
-	"github.com/gofrs/uuid"
+	"github.com/TerrexTech/uuuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
+
+// DBIConfig is the configuration for the authDB.
+type DBIConfig struct {
+	Hosts               []string
+	Username            string
+	Password            string
+	TimeoutMilliseconds uint32
+	Database            string
+	Collection          string
+}
 
 // DBI is the Database-interface for authentication.
 // This fetches/writes data to/from database for auth-actions such as
 // login, registeration etc.
 type DBI interface {
 	Collection() *mongo.Collection
-	UserByUUID(uid uuid.UUID) (*User, error)
+	UserByUUID(uid uuuid.UUID) (*User, error)
 	Login(user *User) (*User, error)
 }
 
@@ -26,13 +36,12 @@ type DB struct {
 
 // EnsureAuthDB exists ensures that the required Database and Collection exists before
 // auth-operations can be done on them. It creates Database/Collection if they don't exist.
-func EnsureAuthDB() (*DB, error) {
-	// Would ideally set these config-params as environment vars
+func EnsureAuthDB(dbConfig DBIConfig) (*DB, error) {
 	config := mongo.ClientConfig{
-		Hosts:               []string{"localhost:27017"},
-		Username:            "root",
-		Password:            "root",
-		TimeoutMilliseconds: 3000,
+		Hosts:               dbConfig.Hosts,
+		Username:            dbConfig.Username,
+		Password:            dbConfig.Password,
+		TimeoutMilliseconds: dbConfig.TimeoutMilliseconds,
 	}
 
 	client, err := mongo.NewClient(config)
@@ -61,8 +70,8 @@ func EnsureAuthDB() (*DB, error) {
 	// ====> Create New Collection
 	collConfig := &mongo.Collection{
 		Connection:   conn,
-		Database:     "rns_projections",
-		Name:         "user_auth",
+		Database:     dbConfig.Database,
+		Name:         dbConfig.Collection,
 		SchemaStruct: &User{},
 		Indexes:      indexConfigs,
 	}
@@ -76,7 +85,9 @@ func EnsureAuthDB() (*DB, error) {
 	}, nil
 }
 
-func (d *DB) UserByUUID(uid uuid.UUID) (*User, error) {
+// UserByUUID gets the User from DB using specified UUID.
+// An error is returned if no user is found.
+func (d *DB) UserByUUID(uid uuuid.UUID) (*User, error) {
 	user := &User{
 		UUID: uid,
 	}
@@ -94,6 +105,8 @@ func (d *DB) UserByUUID(uid uuid.UUID) (*User, error) {
 	return resultUser, nil
 }
 
+// Login authenticates the provided User.
+// An error is returned if Authentication fails.
 func (d *DB) Login(user *User) (*User, error) {
 	authUser := &User{
 		Email:    user.Email,
@@ -118,6 +131,7 @@ func (d *DB) Login(user *User) (*User, error) {
 	return newUser, nil
 }
 
+// Collection returns the currrent MongoDB collection being used for user-auth operations.
 func (d *DB) Collection() *mongo.Collection {
 	return d.collection
 }

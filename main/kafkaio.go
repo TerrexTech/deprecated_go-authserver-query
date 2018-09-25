@@ -7,7 +7,7 @@ import (
 	"github.com/TerrexTech/go-commonutils/commonutil"
 )
 
-// Creates a KafkaIO from KafkaAdapter based on set environment variables.
+// initKafkaIOLogin creates a KafkaIO from KafkaAdapter based on set environment variables.
 func initKafkaIOLogin() (*kafka.IO, error) {
 	brokers := os.Getenv("KAFKA_BROKERS")
 	consumerGroupName := os.Getenv("KAFKA_CONSUMER_GROUP_LOGIN")

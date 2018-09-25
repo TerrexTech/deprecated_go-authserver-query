@@ -3,14 +3,16 @@ package auth
 import (
 	"encoding/json"
 
-	"github.com/gofrs/uuid"
+	"github.com/TerrexTech/uuuid"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/objectid"
+	"github.com/pkg/errors"
 )
 
+// User represents a system-user.
 type User struct {
 	ID        objectid.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-	UUID      uuid.UUID         `bson:"uuid,omitempty" json:"uuid,omitempty"`
+	UUID      uuuid.UUID        `bson:"uuid,omitempty" json:"uuid,omitempty"`
 	Email     string            `bson:"email,omitempty" json:"email,omitempty"`
 	FirstName string            `bson:"first_name,omitempty" json:"first_name,omitempty"`
 	LastName  string            `bson:"last_name,omitempty" json:"last_name,omitempty"`
@@ -31,7 +33,8 @@ type marshalUser struct {
 	Role      string            `bson:"role,omitempty" json:"role,omitempty"`
 }
 
-func (u *User) MarshalBSON() ([]byte, error) {
+// MarshalBSON converts the User to its BSON representation.
+func (u User) MarshalBSON() ([]byte, error) {
 	mu := &marshalUser{
 		ID:        u.ID,
 		FirstName: u.FirstName,
@@ -42,13 +45,13 @@ func (u *User) MarshalBSON() ([]byte, error) {
 		Role:      u.Role,
 	}
 
-	if u.UUID.String() != (uuid.UUID{}).String() {
+	if u.UUID.String() != (uuuid.UUID{}).String() {
 		mu.UUID = u.UUID.String()
 	}
-
 	return bson.Marshal(mu)
 }
 
+// MarshalJSON converts the User to its JSON representation.
 func (u *User) MarshalJSON() ([]byte, error) {
 	// No password here since JSON is for external use, while BSON is used internally
 	mu := &map[string]interface{}{
@@ -63,6 +66,7 @@ func (u *User) MarshalJSON() ([]byte, error) {
 	return json.Marshal(mu)
 }
 
+// UnmarshalBSON converts the BSON representation of User back to User-struct.
 func (u *User) UnmarshalBSON(in []byte) error {
 	m := make(map[string]interface{})
 	err := bson.Unmarshal(in, m)
@@ -71,8 +75,9 @@ func (u *User) UnmarshalBSON(in []byte) error {
 	}
 	u.ID = m["_id"].(objectid.ObjectID)
 
-	u.UUID, err = uuid.FromString(m["uuid"].(string))
+	u.UUID, err = uuuid.FromString(m["uuid"].(string))
 	if err != nil {
+		err = errors.Wrap(err, "Error parsing UUID for user")
 		return err
 	}
 	u.Email = m["email"].(string)

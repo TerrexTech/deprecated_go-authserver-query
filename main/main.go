@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"os"
+	"strconv"
 
 	"github.com/Shopify/sarama"
 	"github.com/TerrexTech/go-authserver-query/auth"
@@ -29,6 +31,11 @@ func main() {
 		"KAFKA_CONSUMER_GROUP_LOGIN",
 		"KAFKA_CONSUMER_TOPIC_LOGIN",
 		"KAFKA_PRODUCER_TOPIC_LOGIN",
+
+		"MONGO_HOSTS",
+		"MONGO_DATABASE",
+		"MONGO_COLLECTION",
+		"MONGO_TIMEOUT",
 	)
 	if err != nil {
 		log.Fatalf(
@@ -36,8 +43,33 @@ func main() {
 		)
 	}
 
+	hosts := os.Getenv("MONGO_HOSTS")
+	username := os.Getenv("MONGO_USERNAME")
+	password := os.Getenv("MONGO_PASSWORD")
+	database := os.Getenv("MONGO_DATABASE")
+	collection := os.Getenv("MONGO_COLLECTION")
+
+	timeoutMilliStr := os.Getenv("MONGO_TIMEOUT")
+	parsedTimeoutMilli, err := strconv.Atoi(timeoutMilliStr)
+	if err != nil {
+		err = errors.Wrap(err, "Error converting Timeout value to int32")
+		log.Println(err)
+		log.Println("MONGO_TIMEOUT value will be set to 3000 as default value")
+		parsedTimeoutMilli = 3000
+	}
+	timeoutMilli := uint32(parsedTimeoutMilli)
+
+	config := auth.DBIConfig{
+		Hosts:               *commonutil.ParseHosts(hosts),
+		Username:            username,
+		Password:            password,
+		TimeoutMilliseconds: timeoutMilli,
+		Database:            database,
+		Collection:          collection,
+	}
+
 	// Init IO
-	db, err := auth.EnsureAuthDB()
+	db, err := auth.EnsureAuthDB(config)
 	if err != nil {
 		err = errors.Wrap(err, "Error connecting to Auth-DB")
 		log.Println(err)
@@ -70,6 +102,7 @@ func main() {
 	}
 }
 
+// handleRequest handles the GraphQL request from HTTP server.
 func handleRequest(db auth.DBI, kio *kafka.IO, msg *sarama.ConsumerMessage) {
 	// Unmarshal msg to KafkaResponse
 	kr := &esmodel.KafkaResponse{}
@@ -91,32 +124,31 @@ func handleRequest(db auth.DBI, kio *kafka.IO, msg *sarama.ConsumerMessage) {
 		return
 	}
 
-	// Authenticate User from DB
+	mUser := make([]byte, 1)
 	errStr := ""
-	var userJSON string
+	// Authenticate User from DB
 	user, err = db.Login(user)
 	if err != nil {
-		err = errors.Wrap(err, "Eror authenticating user")
+		err = errors.Wrap(err, "Error authenticating user")
 		log.Println(err)
 		kio.MarkOffset() <- msg
 		errStr = err.Error()
 	} else {
 		// Marshal User
-		mUser, err := user.MarshalJSON()
+		mUser, err = user.MarshalJSON()
 		if err != nil {
 			err = errors.Wrap(err, "Error marshalling login-user into JSON")
 			log.Println(err)
 			kio.MarkOffset() <- msg
 			errStr = err.Error()
-		} else {
-			userJSON = string(mUser)
 		}
 	}
 
 	kr = &esmodel.KafkaResponse{
+		AggregateID:   kr.AggregateID,
 		CorrelationID: kr.CorrelationID,
 		Error:         errStr,
-		Result:        string(userJSON),
+		Result:        mUser,
 	}
 	kio.ProducerInput() <- kr
 	kio.MarkOffset() <- msg
