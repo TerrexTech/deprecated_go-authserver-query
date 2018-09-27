@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"log"
+
 	"github.com/TerrexTech/go-mongoutils/mongo"
 	"github.com/TerrexTech/uuuid"
 	"github.com/pkg/errors"
@@ -65,6 +67,16 @@ func EnsureAuthDB(dbConfig DBIConfig) (*DB, error) {
 			IsUnique: true,
 			Name:     "username_index",
 		},
+		mongo.IndexConfig{
+			ColumnConfig: []mongo.IndexColumnConfig{
+				mongo.IndexColumnConfig{
+					Name:        "version",
+					IsDescOrder: true,
+				},
+			},
+			IsUnique: true,
+			Name:     "version_index",
+		},
 	}
 
 	// ====> Create New Collection
@@ -109,7 +121,6 @@ func (d *DB) UserByUUID(uid uuuid.UUID) (*User, error) {
 // An error is returned if Authentication fails.
 func (d *DB) Login(user *User) (*User, error) {
 	authUser := &User{
-		Email:    user.Email,
 		Username: user.Username,
 	}
 
@@ -119,12 +130,16 @@ func (d *DB) Login(user *User) (*User, error) {
 		return nil, err
 	}
 	if len(findResults) == 0 {
+		log.Println("===========================")
 		return nil, errors.New("Login: Invalid Credentials")
 	}
 
 	newUser := findResults[0].(*User)
 	passErr := bcrypt.CompareHashAndPassword([]byte(newUser.Password), []byte(user.Password))
+	// log.Println("%+v", user)
 	if passErr != nil {
+		log.Println("++++++++++++++++++++++++++++")
+		log.Println(passErr)
 		return nil, errors.New("Login: Invalid Credentials")
 	}
 

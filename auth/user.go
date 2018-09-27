@@ -19,6 +19,7 @@ type User struct {
 	Username  string            `bson:"username,omitempty" json:"username,omitempty"`
 	Password  string            `bson:"password,omitempty" json:"password,omitempty"`
 	Role      string            `bson:"role,omitempty" json:"role,omitempty"`
+	Version   int64             `bson:"version,omitempty" json:"version,omitempty"`
 }
 
 // marshalUser is a simplified User, for convenient marshalling/unmarshalling operations
@@ -31,6 +32,7 @@ type marshalUser struct {
 	Username  string            `bson:"username,omitempty" json:"username,omitempty"`
 	Password  string            `bson:"password,omitempty" json:"password,omitempty"`
 	Role      string            `bson:"role,omitempty" json:"role,omitempty"`
+	Version   int64             `bson:"version,omitempty" json:"version,omitempty"`
 }
 
 // MarshalBSON converts the User to its BSON representation.
@@ -80,12 +82,24 @@ func (u *User) UnmarshalBSON(in []byte) error {
 		err = errors.Wrap(err, "Error parsing UUID for user")
 		return err
 	}
-	u.Email = m["email"].(string)
-	u.FirstName = m["first_name"].(string)
-	u.LastName = m["last_name"].(string)
-	u.Username = m["username"].(string)
-	u.Password = m["password"].(string)
-	u.Role = m["role"].(string)
+	if m["email"] != nil {
+		u.Email = m["email"].(string)
+	}
+	if m["first_name"] != nil {
+		u.FirstName = m["first_name"].(string)
+	}
+	if m["last_name"] != nil {
+		u.LastName = m["last_name"].(string)
+	}
+	if m["username"] != nil {
+		u.Username = m["username"].(string)
+	}
+	if m["password"] != nil {
+		u.Password = m["password"].(string)
+	}
+	if m["role"] != nil {
+		u.Role = m["role"].(string)
+	}
 
 	return nil
 }

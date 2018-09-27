@@ -144,8 +144,10 @@ func handleRequest(db auth.DBI, kio *kafka.IO, msg *sarama.ConsumerMessage) {
 		}
 	}
 
+	log.Printf("%+v", kr)
+
 	kr = &esmodel.KafkaResponse{
-		AggregateID:   kr.AggregateID,
+		AggregateID:   1,
 		CorrelationID: kr.CorrelationID,
 		Error:         errStr,
 		Result:        mUser,
